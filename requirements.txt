@@ -1,0 +1,9 @@
+requirments:
+
+conda env with:
+samtools
+datamash
+
+
+SMRTLINK v8 bin
+scripts in src
