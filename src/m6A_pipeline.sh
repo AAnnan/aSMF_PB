@@ -12,6 +12,8 @@ reference=$4
 indexBed=$5
 thresholds=$6
 
+aligned_region_subreads=$1
+
 ##################################################################
 # Programs that need to be findable in $PATH :
 # - Pacbio SMRTLINK v8 for bamsieve pbalign ipdSummary 
@@ -20,7 +22,7 @@ thresholds=$6
 # - samtools
 # - two utility Perl scripts in this directory
 ##################################################################
-for program in bamsieve pbalign ipdSummary bedops bedmap datamash samtools ; do
+for program in bamsieve ipdSummary bedops bedmap datamash samtools ; do
     if ! [[ -x $(which "$program") ]] ; then
         echo -e "$0:  Failed to find $program in $PATH\n";
         exit 1
@@ -43,34 +45,6 @@ outdir=results.$regionName
 mkdir -p "$outdir"
 
 
-##################################################################
-#  Find ZMW IDs for molecules mapped in our region of interest.  
-##################################################################
-regionZMW=$outdir/$regionName.list_ZMW_IDS.txt
-if ! [[ -s "$regionZMW" ]] ; then
-    zcat "$indexBed" | bedops -e 1 - "$regionBed" | cut -f 4 | sort -g > "$regionZMW"
-fi
-
-
-##########################################################################
-#  Extract subreads from the full raw data from GEO subread bam file.    
-##########################################################################
-region_subreads="$outdir/$regionName.subreads.bam"
-if ! [[ -s "$region_subreads" ]] ; then
-    bamsieve --whitelist "$regionZMW" "$subreads" "$region_subreads"
-fi
-
-
-##########################################
-#  Align subreads to reference genome.
-##########################################
-aligned_region_subreads="$outdir/aligned.$regionName.bam"
-if ! [[ -s "$aligned_region_subreads" ]] ; then
-    NPROC=48
-    pbalign --nproc "$NPROC" --tmpDir "$TMPDIR" \
-        --concordant --hitPolicy=randombest --minAccuracy 70 --minLength 50 \
-        "$region_subreads" "$reference" "$aligned_region_subreads"
-fi
 
 
 ##########################################################################
