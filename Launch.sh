@@ -3,8 +3,8 @@
 ## Resource Allocation
 #SBATCH --time=2-00:00:00
 #SBATCH --partition=all
-#SBATCH --mem=150G
-#SBATCH –-cpus-per-task=52
+#SBATCH --mem=48G
+#SBATCH –-cpus-per-task=8
 
 #SBATCH --mail-user=ahrmad.annan@students.unibe.ch
 #SBATCH --mail-type=end,fail
