@@ -2,9 +2,9 @@
 
 ## Resource Allocation
 #SBATCH --time=2-00:00:00
-#SBATCH --partition=all
-#SBATCH --mem=150G
-#SBATCH –-cpus-per-task=52
+#SBATCH --partition=gpu
+#SBATCH --mem=96G
+#SBATCH –-cpus-per-task=16
 
 #SBATCH --mail-user=ahrmad.annan@students.unibe.ch
 #SBATCH --mail-type=end,fail
@@ -24,24 +24,18 @@ export PATH=$PATH:./src
 #       bedops (https://bedops.readthedocs.io/en/latest/)
 #       datamash (https://www.gnu.org/software/datamash/)
 
-# Example region EEF-1A
-echo -e "III\t6969000\t6973000" > eef1a.bed
-
-# Mapping locations of molecules (HERE ONLY CHRIII)
-# (not needed if running whole-genome pbalign on the complete raw subreads)
-ZMW_index=chrIII.methyl.bed.gz
-
 # Raw data from GEO
-aligned_subreads_met=/mnt/external.data/MeisterLab/mA_PacBio_2022_01_20/SMRTLINK_v8_Aligned_Replica_1_Methyl/aligned.Methyl.bam
-#subreads_cont=/scratch/aannan/mA_PB43_20012022/Replica_1_Cont/demultiplex.bc1008_BAK8A_OA--bc1008_BAK8A_OA.bam
+aligned_subreads_met=aligned_bc1001_MET.bam
+aligned_subreads_cont=aligned_bc1008_CONT.bam
 
 # Thresholds for calling base modifications depending on subread coverage per molecule.
 thresholds=config/base_mod_thresholds.DS75167.txt
 
 reference=c_elegans.PRJNA13758.WS279.genomic.fa
 
-m6A_pipeline.sh "$aligned_subreads_met" eef1a eef1a.bed "$reference" "$ZMW_index" "$thresholds"
+m6A_pipeline.sh "$aligned_subreads_met" GW_met "$reference" "$thresholds"
+m6A_pipeline.sh "$aligned_subreads_cont" GW_cont "$reference" "$thresholds"
 
 conda deactivate
 
-#sbatch --cpus-per-task 52
+#sbatch --cpus-per-task 16

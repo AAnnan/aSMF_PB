@@ -1,22 +1,18 @@
 #!/bin/bash
 
-if [[ "$#" -ne "6" ]] ; then
-    echo -e "Usage:  $0 subreads.bam region_label region_coords.bed reference.fasta mapped_ZMW_index.bed.gz thresholds_by_coverage.tsv" 1>&2
+if [[ "$#" -ne "4" ]] ; then
+    echo -e "Usage:  $0 subreads.bam region_label reference.fasta thresholds_by_coverage.tsv" 1>&2
     exit 1
 fi
 
-subreads=$1
-regionName=$2
-regionBed=$3
-reference=$4
-indexBed=$5
-thresholds=$6
-
 aligned_region_subreads=$1
+regionName=$2
+reference=$3
+thresholds=$4
 
 ##################################################################
 # Programs that need to be findable in $PATH :
-# - Pacbio SMRTLINK v8 for bamsieve pbalign ipdSummary 
+# - Pacbio SMRTLINK v10 for bamsieve pbalign ipdSummary 
 # - bedops suite for bedops and bedmap
 # - GNU datamash
 # - samtools
@@ -43,9 +39,6 @@ fi
 
 outdir=results.$regionName
 mkdir -p "$outdir"
-
-
-
 
 ##########################################################################
 #  Extract aligned coordinates and subread depth per ZMW.
