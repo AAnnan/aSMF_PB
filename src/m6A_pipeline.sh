@@ -1,14 +1,16 @@
 #!/bin/bash
 
-if [[ "$#" -ne "4" ]] ; then
-    echo -e "Usage:  $0 subreads.bam label reference.fasta thresholds_by_coverage.tsv" 1>&2
+if [[ "$#" -ne "6" ]] ; then
+    echo -e "Usage:  $0 subreads.bam region_label region_coords.bed reference.fasta mapped_ZMW_index.bed.gz thresholds_by_coverage.tsv" 1>&2
     exit 1
 fi
 
 subreads=$1
-Name=$2
-reference=$3
-thresholds=$4
+regionName=$2
+regionBed=$3
+reference=$4
+indexBed=$5
+thresholds=$6
 
 ##################################################################
 # Programs that need to be findable in $PATH :
@@ -18,7 +20,6 @@ thresholds=$4
 # - samtools
 # - two utility Perl scripts in this directory
 ##################################################################
-
 for program in bamsieve pbalign ipdSummary bedops bedmap datamash samtools ; do
     if ! [[ -x $(which "$program") ]] ; then
         echo -e "$0:  Failed to find $program in $PATH\n";
@@ -38,18 +39,37 @@ if ! [[ -f "${reference}.fai" ]] ; then
     fi
 fi
 
-outdir=results.$Name
+outdir=results.$regionName
 mkdir -p "$outdir"
+
+
+##################################################################
+#  Find ZMW IDs for molecules mapped in our region of interest.  
+##################################################################
+regionZMW=$outdir/$regionName.list_ZMW_IDS.txt
+if ! [[ -s "$regionZMW" ]] ; then
+    zcat "$indexBed" | bedops -e 1 - "$regionBed" | cut -f 4 | sort -g > "$regionZMW"
+fi
+
+
+##########################################################################
+#  Extract subreads from the full raw data from GEO subread bam file.    
+##########################################################################
+region_subreads="$outdir/$regionName.subreads.bam"
+if ! [[ -s "$region_subreads" ]] ; then
+    bamsieve --whitelist "$regionZMW" "$subreads" "$region_subreads"
+fi
+
 
 ##########################################
 #  Align subreads to reference genome.
 ##########################################
-aligned_subreads="$outdir/aligned.$Name.bam"
-if ! [[ -s "$aligned_subreads" ]] ; then
+aligned_region_subreads="$outdir/aligned.$regionName.bam"
+if ! [[ -s "$aligned_region_subreads" ]] ; then
     NPROC=48
     pbalign --nproc "$NPROC" --tmpDir "$TMPDIR" \
         --concordant --hitPolicy=randombest --minAccuracy 70 --minLength 50 \
-        "$subreads" "$reference" "$aligned_subreads"
+        "$region_subreads" "$reference" "$aligned_region_subreads"
 fi
 
 
@@ -62,9 +82,9 @@ MIN_SUBREAD_COVERAGE=10
 # Setting a maximum subread coverage can be helpful to avoid alignment artifacts.  Set to zero here for no limit.
 MAX_SUBREAD_COVERAGE=0
 
-mapped_ZMW_list=$outdir/$Name.unique_ZMW_coords.tsv
+mapped_ZMW_list=$outdir/$regionName.unique_ZMW_coords.tsv
 if ! [[ -s "$mapped_ZMW_list" ]] ; then
-    samtools view "$aligned_subreads" \
+    samtools view "$aligned_region_subreads" \
         | pacbio_cigar2coords.pl \
         | datamash -s -g 1,4  min 2 max 3 count 4 \
         | awk 'BEGIN{OFS="\t"} { print $1, $3, $4, $2, ($4-$3), $5 }' \
@@ -77,13 +97,13 @@ fi
 ##########################################################################
 #  Analyze kinetics of each molecule individually.                       #
 ##########################################################################
-blocktrack=$outdir/tracks_m6A.$Name.txt
+blocktrack=$outdir/tracks_m6A.$regionName.txt
 if ! [[ -s "$blocktrack" ]] ; then
     while FS='\t' read chrom min0 max1 zmwid span coverage regions ; do
         csv=$outdir/basemods.$zmwid.csv.gz
         if ! [[ -f "$csv" ]] ; then
             output_bam=$TMPDIR/tmp.$zmwid.bam
-            bamsieve --whitelist "$zmwid" "$aligned_subreads" "$output_bam"
+            bamsieve --whitelist "$zmwid" "$aligned_region_subreads" "$output_bam"
             ipdSummary \
                 --reference "$reference" \
                 --gff $outdir/basemods.$zmwid.gff \
@@ -118,11 +138,9 @@ if ! [[ -s "$blocktrack" ]] ; then
     done<"$mapped_ZMW_list"
 fi
 
-sortedtrack=$outdir/sorted_tracks_m6A.$Name.txt
+sortedtrack=$outdir/sorted_tracks_m6A.$regionName.txt
 if ! [[ -s "$sortedtrack" ]] ; then
     # Adding an optional track header to override the default dense visibility mode.
-    echo -e "track name=\"$Name\" description=\"$Name\" visibility=pack" > "$sortedtrack"
+    echo -e "track name=\"$regionName\" description=\"$regionName\" visibility=pack" > "$sortedtrack"
     sort -k1,1 -k2,2n -k3,3n -k4,4n "$blocktrack" >> "$sortedtrack"
 fi
-
-
