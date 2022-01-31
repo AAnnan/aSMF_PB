@@ -33,8 +33,8 @@ thresholds=config/base_mod_thresholds.DS75167.txt
 
 reference=c_elegans.PRJNA13758.WS279.genomic.fa
 
-m6A_pipeline.sh "$aligned_subreads_met" GW_met "$reference" "$thresholds"
-m6A_pipeline.sh "$aligned_subreads_cont" GW_cont "$reference" "$thresholds"
+genome_wide_m6A_pipeline.sh "$aligned_subreads_met" GW_met "$reference" "$thresholds"
+genome_wide_m6A_pipeline.sh "$aligned_subreads_cont" GW_cont "$reference" "$thresholds"
 
 conda deactivate
 
