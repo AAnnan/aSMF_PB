@@ -40,4 +40,4 @@ pbindex aligned_bc1001_MET.bam
 
 conda deactivate
 
-#sbatch --cpus-per-task 102
+#sbatch --cpus-per-task 64
