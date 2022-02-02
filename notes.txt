@@ -3,6 +3,9 @@ Software requirements:
 ##############################
 
 conda env with:
+python 3.8
+scipy
+numpy
 samtools #conda install -c bioconda samtools
 datamash #conda install -c bioconda datamash
 bedops #conda install -c bioconda bedops

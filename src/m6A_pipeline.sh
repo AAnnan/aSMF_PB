@@ -139,4 +139,7 @@ if ! [[ -s "$sortedtrack" ]] ; then
     sort -k1,1 -k2,2n -k3,3n -k4,4n "$blocktrack" >> "$sortedtrack"
 fi
 
-
+sed '1d' "$sortedtrack" > sortedBed.txt
+cut -f7 sortedBed.txt > Start.txt
+cut -f12 sortedBed.txt > Met.txt
+rm sortedBed.txt
