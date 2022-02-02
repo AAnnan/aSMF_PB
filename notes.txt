@@ -1,0 +1,31 @@
+##############################
+Software requirements:
+##############################
+
+conda env with:
+samtools #conda install -c bioconda samtools
+datamash #conda install -c bioconda datamash
+bedops #conda install -c bioconda bedops
+ucsc-fetchchromsizes #conda install -c bioconda ucsc-fetchchromsizes
+ucsc-wigtobigwig #conda install -c bioconda ucsc-wigtobigwig
+
+Pacbio SMRT Link v10
+# Download from https://www.pacb.com/support/software-downloads/
+# install with smrtlink-*.run --rootdir smrtlink10 --smrttools-only
+
+
+Scripts in src
+Thresholds in config
+
+##############################
+Information on output:
+##############################
+02_ZMW_coords_per_chrom.sh:
+$name.unique_ZMW_coords.tsv
+
+$1: chrom
+$2: start
+$3: end
+$4: ZMW_ID
+$5: span
+$6: subread coverage
