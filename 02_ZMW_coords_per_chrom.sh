@@ -46,8 +46,8 @@ fi
 cut --fields=1-4 $sampleName.unique_ZMW_coords.tsv > unique_ZMW_coords.tsv
 
 for chr in "${chroms[@]}"; do 
-	grep "^${chr}" unique_ZMW_coords.tsv > "chr${chr}.methyl.bed"
-	gzip "chr${chr}.methyl.bed"
+	grep "^${chr}" unique_ZMW_coords.tsv > "chr${chr}.${sampleName}.bed"
+	gzip "chr${chr}.${sampleName}.bed"
 done
 
 rm unique_ZMW_coords.tsv
