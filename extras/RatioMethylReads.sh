@@ -1,5 +1,23 @@
-#!/bin/bash
+#! /bin/bash
+
+## Resource Allocation
+#SBATCH --time=7-00:00:00
+#SBATCH --partition=gpu
+#SBATCH --mem=96G
+#SBATCH –-cpus-per-task=16
+
+#SBATCH --mail-user=ahrmad.annan@students.unibe.ch
+#SBATCH --mail-type=end,fail
+#SBATCH --job-name="PacBio"
+
+### TO MODIFY \!/
+##############
+##############
 sampleName=larp1_met
+##############
+##############
+
+#Set the threshold to count a read as having methylation
 thresh=10
 
 # Get the total # reads
