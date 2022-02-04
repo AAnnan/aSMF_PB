@@ -29,5 +29,9 @@ met=$(wc -l < count)
 rm count
 
 # Calculated and output the ratio
-ratio=$(awk -v met="$met" -v tot="$tot" 'BEGIN { print  ( met / tot ) }')
-echo "${ratio}% of reads show >10 6mAs in ${sampleName}"
+ratio=$(awk -v met="$met" -v tot="$tot" 'BEGIN { print  ( 100 * met / tot ) }')
+echo "${ratio}% of reads show >10 6mAs marks in ${sampleName}"
+
+# Calculate and output the average marks per read
+av=$(awk -v N=10 '{ sum += $N } END { if (NR > 0) print sum / NR }' tracks_m6A.${sampleName}.txt)
+echo "In average ${av} marks per read in ${sampleName}"
