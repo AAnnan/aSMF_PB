@@ -21,7 +21,7 @@ sampleName=larp1_met
 thresh=10
 
 # Get the total # reads
-tot=$(wc -l < tracks_m6A.larp1_met.txt)
+tot=$(wc -l < tracks_m6A.${sampleName}.txt)
 
 # Get the # of reads containing > thresh methylated Adenines
 awk -v thresh="$thresh" '$10>=thresh {print $10}' tracks_m6A.${sampleName}.txt > count
