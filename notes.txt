@@ -32,3 +32,19 @@ $3: end
 $4: ZMW_ID
 $5: span
 $6: subread coverage
+
+03_Kinetics.sh:
+tracks_m6A.$name.txt
+
+$1: $chrom
+$2: $chromStart
+$3: $chromEnd
+$4: $name
+$5: $coverage
+$6: $strand
+$7: $thickStart
+$8: $thickEnd
+$9: $itemRgb
+$10: $blockCount
+$11: $blockSizes
+$12: $blockStarts
