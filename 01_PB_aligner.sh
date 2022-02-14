@@ -34,9 +34,11 @@ ref=c_elegans.PRJNA13758.WS279.genomic.fa
 ##############
 ##############
 
+# Index the reference fasta
 ref_mmi=ce11.mmi
 pbmm2 index "$ref" "$ref_mmi"
 
+# Align control and methylated
 pbmm2 align --sort --sort-memory 10G \
 			--num-threads 48 --sort-threads 8 \
 			"$ref_mmi" "$subreads_cont" "$aligned_cont"
@@ -45,6 +47,7 @@ pbmm2 align --sort --sort-memory 10G \
 			--num-threads 48 --sort-threads 8 \
 			"$ref_mmi" "$subreads_met" "$aligned_met"
 
+# Index the resulting aligned BAMs
 pbindex "$aligned_cont"
 pbindex "$aligned_met"
 
