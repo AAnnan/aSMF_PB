@@ -1,5 +1,5 @@
 ## aSMF_PB
-Analysis pipeline of adenine methylation single-molecule footprinting (aSMF) experiments with PacBio sequencing.
+Analysis pipeline of adenine methylation single-molecule footprinting (aSMF) experiments with PacBio sequencing. Largely based on the code by [Stergachis *et al.* (2020)](https://www.science.org/doi/10.1126/science.aaz1646)
 
 ## Index
 
