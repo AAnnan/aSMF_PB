@@ -15,7 +15,7 @@ source ${CONDA_ACTIVATE} pacbio
 ### TO MODIFY \!/
 ##############
 ##############
-sampleName="GenomeWide_met"
+sampleName="methyl"
 aligned_subreads="aligned_bc1001_MET.bam"
 ##############
 ##############
