@@ -4,7 +4,7 @@
 #SBATCH --time=14-00:00:00
 #SBATCH --partition=gpu
 #SBATCH --mem=96G
-#SBATCH –-cpus-per-task=16
+#SBATCH --cpus-per-task=16
 
 #SBATCH --mail-user=ahrmad.annan@students.unibe.ch
 #SBATCH --mail-type=end,fail
