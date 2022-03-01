@@ -33,6 +33,8 @@ chrom=III
 start=6969000
 end=6970000
 
+# region BED
+echo -e "${chrom}\t${start}\t${end}" > ${region_sampleName}.bed
 # supply the proper ZMW_index (mapping locations of molecules) (ZMW_index)
 ZMW_index=chrIII.methyl.bed.gz
 
